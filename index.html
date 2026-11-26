@@ -19,9 +19,9 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6}
 [hidden]{display:none!important}
-.brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:18px}
 .brand .lead{margin:0}
-.logo{flex:none;width:56px;height:56px;display:block;border-radius:12px}@media (min-width:768px){.logo{width:64px;height:64px}}
+.logo{flex:none;width:24px;height:24px;display:block}@media (min-width:768px){.logo{width:28px;height:28px}}
 .copy{margin:34px 0 0;padding-top:14px;border-top:1px solid var(--bd);text-align:center;color:var(--sub);font-size:.8rem;line-height:1.7}
 #bar{max-width:2000px;margin:0 auto;padding:10px 16px 0}
 #bar a{color:var(--hit);text-decoration:none;font-size:.9rem}
@@ -39,7 +39,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","
 <body>
 <nav id="bar" hidden><a href="#home">← 首頁</a></nav>
 <div id="home" hidden><div class="hm">
-<header class="brand"><img class="logo" src="assets/logo/wyatt-icon-dark.svg" width="64" height="64" alt="Wyatt 鼓手練習室標誌"><div><h1>鼓手練習室</h1></div></header>
+<header class="brand"><img class="logo" src="assets/logo/hui.svg" width="28" height="28" alt="輝 鼓手練習室標誌"><div><h1>鼓手練習室</h1></div></header>
 <nav class="hm-list">
 <a class="hm-item" href="#cards"><b>切分音</b></a>
 <a class="hm-item" href="#accent"><b>輕重音</b></a>
@@ -49,7 +49,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","
 <div id="mount"></div>
 <template id="t-cards"><main>
 <header class="brand">
-<img class="logo" src="assets/logo/wyatt-icon-dark.svg" width="64" height="64" alt="Wyatt 鼓手練習室標誌">
+<img class="logo" src="assets/logo/hui.svg" width="28" height="28" alt="輝 鼓手練習室標誌">
 <div>
 
 <p class="lead">每張卡片是一拍，1 2 3 4 是這一拍裡的四個十六分音符（唸作 1 e &amp; a），不是小節裡的四拍。<b>藍色數字</b>代表要打，<i>粉色數字</i>代表不打。</p>
@@ -87,7 +87,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","
 </main></template>
 <template id="t-accent"><main>
 <header class="brand">
-<img class="logo" src="assets/logo/wyatt-icon-dark.svg" width="64" height="64" alt="Wyatt 鼓手練習室標誌">
+<img class="logo" src="assets/logo/hui.svg" width="28" height="28" alt="輝 鼓手練習室標誌">
 <div>
 
 <p class="lead"><span class="F"><b>F</b> Full 高→高</span>　<span class="D"><b>D</b> Down 高→低</span>　<span class="U"><b>U</b> Up 低→高</span>　Tap 不標</p>
@@ -179,9 +179,9 @@ details{margin-top:28px}
 summary{cursor:pointer;font-weight:600;margin-bottom:12px}
 @media (max-width:640px){.sheet{grid-template-columns:minmax(0,1fr)}}
 #sheet{display:grid;grid-template-columns:repeat(1600,minmax(0,1fr));align-items:start;background:var(--paper);border:1px solid var(--bd);border-radius:8px;padding:8px 6px;column-gap:0;row-gap:4px}
-.brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:18px}
 .brand .lead{margin:0}
-.logo{flex:none;width:56px;height:56px;display:block;border-radius:12px}@media (min-width:768px){.logo{width:64px;height:64px}}
+.logo{flex:none;width:24px;height:24px;display:block}@media (min-width:768px){.logo{width:28px;height:28px}}
 .copy{margin:34px 0 0;padding-top:14px;border-top:1px solid var(--bd);text-align:center;color:var(--sub);font-size:.8rem;line-height:1.7}
 .idx{position:static;display:inline-block;margin:0 0 0 2px;padding:0 5px;border-radius:10px;background:none;color:var(--sub);border:0;cursor:pointer;font-size:.62rem;line-height:1.3}
 .panel{padding:9px 12px;gap:8px 12px;font-size:.88rem;margin-bottom:18px}
@@ -237,9 +237,9 @@ input[type=range]{flex:1 1 150px;min-width:130px;accent-color:var(--acc)}
 #sheet.showall .stk,.card.sh .stk{visibility:visible}
 .F{color:var(--acc)}.D{color:var(--amb)}.T{color:var(--sub)}.U{color:var(--hit)}
 .count{color:var(--sub);font-size:.86rem;margin:0 0 10px}
-.brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:18px}
 .brand .lead{margin:0}
-.logo{flex:none;width:56px;height:56px;display:block;border-radius:12px}@media (min-width:768px){.logo{width:64px;height:64px}}
+.logo{flex:none;width:24px;height:24px;display:block}@media (min-width:768px){.logo{width:28px;height:28px}}
 .copy{margin:34px 0 0;padding-top:14px;border-top:1px solid var(--bd);text-align:center;color:var(--sub);font-size:.8rem;line-height:1.7}
 .card{display:block;padding-top:0;cursor:pointer}
 .card svg.st{display:block;width:100%;height:auto;color:var(--ink)}
