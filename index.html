@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<!-- © 2026 輝. All rights reserved. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>鼓手練習室</title>
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#F6F7F9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14171F" media="(prefers-color-scheme: dark)">
+<style id="shell">
+:root{--bg:#f6f7f9;--paper:#fff;--ink:#1c2130;--sub:#6b7280;--bd:#dde1e8;--hit:#2f5bd8;--acc:#d6334a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171f;--paper:#1c212c;--ink:#e9ecf3;--sub:#9aa3b2;--bd:#2c3342;--hit:#7ea1ff;--acc:#ff6b7f}}
+:root[data-theme="dark"]{--bg:#14171f;--paper:#1c212c;--ink:#e9ecf3;--sub:#9aa3b2;--bd:#2c3342;--hit:#7ea1ff;--acc:#ff6b7f}
+html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6}
+[hidden]{display:none!important}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:18px}
+.brand .lead{margin:0}
+.logo{flex:none;width:24px;height:24px;display:block}@media (min-width:768px){.logo{width:28px;height:28px}}
+.copy{margin:34px 0 0;padding-top:14px;border-top:1px solid var(--bd);text-align:center;color:var(--sub);font-size:.8rem;line-height:1.7}
+#bar{max-width:2000px;margin:0 auto;padding:10px 16px 0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+#bar[hidden]{display:none}
+#bar a{justify-self:start}
+#ttl{grid-column:2;font-size:.95rem;font-weight:600;color:var(--ink);white-space:nowrap}
+#bar a{color:var(--hit);text-decoration:none;font-size:.9rem}
+.hm{max-width:720px;margin:0 auto;padding:28px 16px 48px}
+.hm h1{font-size:1.5rem;margin:0;letter-spacing:.04em}
+.hm h2.sec{font-size:.9rem;font-weight:600;color:var(--sub);letter-spacing:.08em;margin:24px 0 8px}
+.hm .brand+.sec{margin-top:0}
+.hm-list{display:grid;gap:12px}
+.hm-item{display:block;text-decoration:none;color:inherit;background:var(--paper);border:1px solid var(--bd);border-radius:10px;padding:14px 18px}
+.hm-item:hover{border-color:var(--hit)}
+.hm-item:focus-visible{outline:2px solid var(--hit);outline-offset:2px}
+.hm-item b{display:block;font-size:1.15rem;color:var(--hit)}
+.hm-item span{font-size:.88rem;color:var(--sub)}
+</style>
+<style id="pagecss"></style>
+</head>
+<body>
+<nav id="bar" hidden><a href="#home">← 首頁</a><span id="ttl"></span></nav>
+<div id="home" hidden><div class="hm">
+<header class="brand"><img class="logo" src="assets/logo/hui.svg" width="28" height="28" alt="輝 鼓手練習室標誌"><div><h1>鼓手練習室</h1></div></header>
+<h2 class="sec" id="sec-solo">單獨練習</h2>
+<nav class="hm-list" aria-labelledby="sec-solo">
+<a class="hm-item" href="#cards"><b>切分音</b></a>
+<a class="hm-item" href="#accent"><b>輕重音</b></a>
+<a class="hm-item" href="#groove"><b>節奏律動</b></a>
+</nav>
+<h2 class="sec" id="sec-combo">組合練習</h2>
+<nav class="hm-list" aria-labelledby="sec-combo">
+<a class="hm-item" href="#combo"><b>切分音＋輕重拍</b></a>
+</nav>
+<footer class="copy">© 2026 輝　版權所有 All rights reserved.</footer>
+</div></div>
+<div id="mount"></div>
+<template id="t-cards"><main>
+<header class="brand">
+<img class="logo" src="assets/logo/hui.svg" width="28" height="28" alt="輝 鼓手練習室標誌">
+<div>
+
+<p class="lead"><b>藍色數字</b>代表要打，<i>粉色數字</i>代表不打。</p>
+</div></header>
+<section class="panel" aria-label="抽卡設定">
+  <label for="n">拍數（4 拍＝1 小節）</label>
+  <div class="num">
+    <button class="step" id="minus" aria-label="減少一拍">−</button>
+    <input id="n" type="number" min="1" max="32" value="16" inputmode="numeric">
+    <button class="step" id="plus" aria-label="增加一拍">＋</button>
+  </div>
+  <input id="r" type="range" min="1" max="32" value="16" aria-label="拍數">
+  <button class="go" id="go">抽卡</button>
+  <div style="flex-basis:100%;height:0"></div>
+  <label for="bpm">速度</label><div class="num"><button class="step" id="bminus" aria-label="減慢">−</button><input id="bpm" type="number" min="30" max="180" value="45" inputmode="numeric"><button class="step" id="bplus" aria-label="加快">＋</button></div>
+  <input id="brng" type="range" min="30" max="180" value="45" aria-label="速度">
+  <label class="chk"><input type="checkbox" id="dyn" checked>動態</label>
+  <label class="chk"><input type="checkbox" id="met" checked>節拍器</label>
+  <label class="chk"><input type="checkbox" id="drm" checked>鼓聲</label>
+  <input id="st" type="hidden" value="1">
+  <button class="play" id="play">▶ 播放</button>
+  <label class="chk"><input type="checkbox" id="shownum">顯示所有拍數</label>
+</section>
+<div class="sheetbar"><label class="chk"><input type="checkbox" id="hideidx">隱藏卡號</label></div>
+<div class="sheet" id="sheet" aria-live="polite"></div>
+<details>
+  <summary>查看全部 15 種卡片</summary>
+  <div class="sheet" id="all"></div>
+</details>
+<details>
+  <summary>推導過程</summary>
+  <div class="derive" id="derive"></div>
+</details>
+<footer class="copy">© 2026 輝　版權所有 All rights reserved.</footer>
+</main></template>
+<template id="t-accent"><main>
+<header class="brand">
+<img class="logo" src="assets/logo/hui.svg" width="28" height="28" alt="輝 鼓手練習室標誌">
+<div>
+
+<p class="lead"><span class="F"><b>F</b> Full 高→高</span>　<span class="D"><b>D</b> Down 高→低</span>　<span class="U"><b>U</b> Up 低→高</span>　Tap 不標</p>
+</div></header>
+<section class="panel" aria-label="設定">
+  <label for="m">拍數（4 拍＝1 小節）</label>
+  <div class="num"><button class="step" id="mm" aria-label="減少一拍">−</button><input id="m" type="number" min="1" max="32" value="16" inputmode="numeric"><button class="step" id="mp" aria-label="增加一拍">＋</button></div>
+  <input id="mr" type="range" min="1" max="32" value="16" aria-label="拍數">
+  <div class="m-br"></div>
+  <label for="mode">重音</label>
+  <select id="mode"><option value="bar1">每拍 1 個</option><option value="rand">隨機分布</option></select>
+  <button class="go" id="go">抽卡</button>
+  <div style="flex-basis:100%;height:0"></div>
+  <label for="bpm">速度</label>
+  <div class="num"><button class="step" id="bm" aria-label="減慢">−</button><input id="bpm" type="number" min="10" max="180" value="60" inputmode="numeric"><button class="step" id="bp" aria-label="加快">＋</button></div>
+  <input id="brng" type="range" min="10" max="180" value="60" aria-label="速度">
+  <label class="chk"><input type="checkbox" id="dyn" checked>動態</label>
+  <label class="chk"><input type="checkbox" id="met" checked>節拍器</label>
+  <label class="chk"><input type="checkbox" id="drm" checked>鼓聲</label>
+  <input id="st" type="hidden" value="1">
+  <button class="play" id="play">▶ 播放</button>
+  <label class="chk"><input type="checkbox" id="show">顯示全部手法</label>
+</section>
+
+
+<div class="sheetbar"><label class="chk"><input type="checkbox" id="hideidx">隱藏卡號</label></div>
+<div id="sheet" aria-live="polite"></div>
+<details>
+  <summary>查看全部 16 種組合方式</summary>
+  <div id="all16"></div>
+</details>
+<footer class="copy">© 2026 輝　版權所有 All rights reserved.</footer>
+</main></template>
+<template id="t-combo"><main>
+<header class="brand">
+<img class="logo" src="assets/logo/hui.svg" width="28" height="28" alt="輝 鼓手練習室標誌">
+</header>
+<section class="panel" aria-label="設定">
+  <label for="n">拍數（4 拍＝1 小節）</label>
+  <div class="num"><button class="step" id="minus" aria-label="減少一拍">−</button><input id="n" type="number" min="1" max="32" value="16" inputmode="numeric"><button class="step" id="plus" aria-label="增加一拍">＋</button></div>
+  <input id="r" type="range" min="1" max="32" value="16" aria-label="拍數">
+  <div class="b1"></div>
+  <label for="mode" class="rt">重音</label>
+  <select id="mode"><option value="bar1">每拍 1 個</option><option value="rand">隨機分布</option></select>
+  <button class="go" id="go">抽卡</button>
+  <div style="flex-basis:100%;height:0"></div>
+  <label for="bpm">速度</label><div class="num"><button class="step" id="bminus" aria-label="減慢">−</button><input id="bpm" type="number" min="10" max="180" value="60" inputmode="numeric"><button class="step" id="bplus" aria-label="加快">＋</button></div>
+  <input id="brng" type="range" min="10" max="180" value="60" aria-label="速度">
+  <label class="chk"><input type="checkbox" id="dyn" checked>動態</label>
+  <label class="chk"><input type="checkbox" id="met" checked>節拍器</label>
+  <label class="chk"><input type="checkbox" id="drm" checked>鼓聲</label>
+  <input id="st" type="hidden" value="1">
+  <button class="play" id="play">▶ 播放</button>
+  <label class="chk"><input type="checkbox" id="shownum">顯示所有拍數</label>
+  <label class="chk"><input type="checkbox" id="show">顯示全部手法</label>
+</section>
+<div class="sheetbar"><label class="chk"><input type="checkbox" id="hideidx">隱藏卡號</label></div>
+<div id="sheet" aria-live="polite"></div>
+<footer class="copy">© 2026 輝　版權所有 All rights reserved.</footer>
+</main></template>
+<template id="t-groove"><main>
+<header class="brand">
+<img class="logo" src="assets/logo/hui.svg" width="28" height="28" alt="輝 鼓手練習室標誌">
+<div>
+<p class="lead">Hi-hat打八分音符重、輕、重、輕。</p>
+</div></header>
+<section class="panel" aria-label="設定">
+  <label for="n">組合數</label>
+  <div class="num"><button class="step" id="minus" aria-label="減少一組">−</button><input id="n" type="number" min="1" max="8" value="2" inputmode="numeric"><button class="step" id="plus" aria-label="增加一組">＋</button></div>
+  <input id="r" type="range" min="1" max="8" value="2" aria-label="組合數">
+  <div class="b1"></div>
+  <label for="lvl" class="rt">難度</label>
+  <select id="lvl"><option value="A">易</option><option value="B">難</option></select>
+  <label for="dens">每拍音數</label>
+  <select id="dens" title="每一拍裡 Snare＋Kick 的音符數（不含 Hi-hat）"><option value="0">不限</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+  <button class="go" id="go">抽卡</button>
+  <div style="flex-basis:100%;height:0"></div>
+  <label for="bpm">速度</label><div class="num"><button class="step" id="bminus" aria-label="減慢">−</button><input id="bpm" type="number" min="10" max="180" value="60" inputmode="numeric"><button class="step" id="bplus" aria-label="加快">＋</button></div>
+  <input id="brng" type="range" min="10" max="180" value="60" aria-label="速度">
+  <div class="b2"></div>
+  <label class="chk"><input type="checkbox" id="dyn" checked>動態</label>
+  <label class="chk"><input type="checkbox" id="met" checked>節拍器</label>
+  <label class="chk"><input type="checkbox" id="hh" checked>Hi-hat</label>
+  <label class="chk"><input type="checkbox" id="sn" checked>Snare</label>
+  <label class="chk"><input type="checkbox" id="bd" checked>Kick</label>
+  <input id="st" type="hidden" value="1">
+  <button class="play" id="play">▶ 播放</button>
+</section>
+<div class="sheetbar"><label class="chk"><input type="checkbox" id="hideidx">隱藏卡號</label></div>
+<div id="bars" aria-live="polite"></div>
+<footer class="copy">© 2026 輝　版權所有 All rights reserved.</footer>
+</main></template>
+<script type="text/plain" id="c-cards">
+:root{--bg:#f6f7f9;--paper:#fff;--ink:#1c2130;--sub:#6b7280;--line:#aab0bc;--hit:#2f5bd8;--miss:#eb9aa0;--acc:#d6334a;--bd:#dde1e8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171f;--paper:#1c212c;--ink:#e9ecf3;--sub:#9aa3b2;--line:#566074;--hit:#7ea1ff;--miss:#8a4a52;--acc:#ff6b7f;--bd:#2c3342}}
+:root[data-theme="dark"]{--bg:#14171f;--paper:#1c212c;--ink:#e9ecf3;--sub:#9aa3b2;--line:#566074;--hit:#7ea1ff;--miss:#8a4a52;--acc:#ff6b7f;--bd:#2c3342}
+html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6}
+main{max-width:1600px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.5rem;margin:0 0 4px;letter-spacing:.04em}
+.lead{margin:0 0 18px;color:var(--sub);font-size:.92rem}
+.lead b{color:var(--hit)}.lead i{font-style:normal;color:var(--miss);font-weight:700}
+.panel{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;background:var(--paper);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;margin-bottom:20px}
+.panel label{font-weight:600}
+.num{display:flex;align-items:center;gap:6px}
+.num input[type=number]{width:4.2em;font:inherit;font-size:1.1rem;text-align:center;padding:6px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--bg);color:var(--ink);border-radius:6px;padding:6px 12px}
+button.step{width:36px;padding:6px 0;font-size:1.1rem}
+button.go{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700;padding:8px 22px}
+button:focus-visible,input:focus-visible{outline:2px solid var(--hit);outline-offset:2px}
+input[type=range]{flex:1 1 160px;min-width:140px;accent-color:var(--acc)}
+.sheet{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 22px}
+.measure{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--paper);border-radius:6px}
+.card{position:relative}
+#all .card+.card{border-left:1px dashed var(--bd)}
+.card svg{display:block;width:100%;height:auto}
+#sheet .card{flex:none}
+#sheet{container-type:inline-size}
+#sheet .card{--u:calc(100cqw/800);position:relative;padding-top:14px;background-repeat:no-repeat;background-size:100% 1px;
+ background-image:linear-gradient(var(--line),var(--line)),linear-gradient(var(--line),var(--line)),linear-gradient(var(--line),var(--line)),linear-gradient(var(--line),var(--line)),linear-gradient(var(--line),var(--line));
+ background-position:0 calc(14px + var(--u)*62),0 calc(14px + var(--u)*70),0 calc(14px + var(--u)*78),0 calc(14px + var(--u)*86),0 calc(14px + var(--u)*94)}
+#sheet .card svg{width:calc(var(--W)*var(--u));margin:0 auto}
+#sheet .idx{position:absolute;left:0;top:0;z-index:1}
+#sheet .card.mend::after{content:"";position:absolute;right:0;top:calc(14px + var(--u)*62);height:calc(var(--u)*32);width:1px;background:var(--line)}
+.sheetbar{display:flex;justify-content:flex-end;margin:0 0 6px;font-size:.88rem}
+#sheet.hideidx .idx{visibility:hidden;pointer-events:none}
+#sheet .card svg{overflow:visible}
+.card svg .num{display:none}
+#all .card svg .num,#sheet.shownum .card svg .num,#sheet .card.on svg .num{display:inline}
+.chk{display:flex;align-items:center;gap:6px;cursor:pointer}
+#bpm{width:4.2em;font:inherit;text-align:center;padding:6px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--ink)}
+#sheet .card.cur{background-color:color-mix(in srgb,var(--hit) 14%,transparent)}
+.nt.on{fill:var(--acc);stroke:var(--acc)}
+button.play{border-color:var(--hit);color:var(--hit);font-weight:700}
+.derive{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.ditem{background:var(--paper);border:1px solid var(--bd);border-radius:8px;padding:10px 12px}
+.ditem h3{margin:0 0 6px;font-size:1rem}
+.drow{display:flex;align-items:flex-start;gap:16px}
+.drow figure{margin:0;flex:1 1 0;min-width:0}
+.drow figcaption{font-size:.72rem;color:var(--sub);text-align:center;line-height:1.3}
+.drow figure:last-child figcaption{color:var(--ink);font-weight:600}
+.drow .ar{position:absolute;left:-14px;top:78%;transform:translate(-50%,-50%);color:var(--sub);font-size:.9rem;line-height:1}
+h2{font-size:1.2rem;margin:36px 0 6px}
+#derive .card.first svg .num{display:inline}
+.count{color:var(--sub);font-size:.88rem;margin:0 0 10px}
+details{margin-top:28px}
+summary{cursor:pointer;font-weight:600;margin-bottom:12px}
+@media (max-width:640px){.sheet{grid-template-columns:minmax(0,1fr)}}
+#sheet{display:grid;grid-template-columns:repeat(1600,minmax(0,1fr));align-items:start;background:var(--paper);border:1px solid var(--bd);border-radius:8px;padding:8px 6px;column-gap:0;row-gap:4px}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:18px}
+.brand .lead{margin:0}
+.logo{flex:none;width:24px;height:24px;display:block}@media (min-width:768px){.logo{width:28px;height:28px}}
+.copy{margin:34px 0 0;padding-top:14px;border-top:1px solid var(--bd);text-align:center;color:var(--sub);font-size:.8rem;line-height:1.7}
+.idx{position:static;display:inline-block;margin:0 0 0 2px;padding:0 5px;border-radius:10px;background:none;color:var(--sub);border:0;cursor:pointer;font-size:.62rem;line-height:1.3}
+.panel{padding:9px 12px;gap:8px 12px;font-size:.88rem;margin-bottom:18px}
+@media (min-width:640px){.panel{gap:8px 16px}}
+.panel button.step{width:28px;padding:3px 0;font-size:1rem}
+.panel .num input[type=number],#bpm{width:3.4em;font-size:.95rem;padding:3px}
+.panel>button.go,.panel>button.play{min-width:6em;padding:6px 0;font-size:.9rem}
+.card.startc .idx{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+</script>
+<script type="text/plain" id="c-combo">
+.b1{flex-basis:100%;height:0}
+.b2{display:none}
+@media (min-width:640px){.b1{display:none}.b2{display:block;flex-basis:100%;height:0}.rt{margin-left:auto}#r{flex:1 1 90px;min-width:80px}}
+:root{--amb:#c46a12}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--amb:#f0a24f}}
+:root[data-theme="dark"]{--amb:#f0a24f}
+select{font:inherit;padding:3px 4px;font-size:.88rem;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--ink)}
+select:focus-visible{outline:2px solid var(--hit);outline-offset:2px}
+.F{color:var(--acc)}.D{color:var(--amb)}.U{color:var(--hit)}
+.lead span b{color:inherit}.lead b.r{color:var(--acc)}
+.hint{visibility:hidden}
+#sheet.showall .hint,.card.sh .hint{visibility:visible}
+</script>
+<script type="text/plain" id="c-groove">
+.bar{display:grid;grid-template-columns:2.2em minmax(0,1fr) minmax(0,1fr);align-items:end;background:var(--paper);border:1px solid var(--bd);border-radius:8px;padding:6px 8px 4px 4px;margin-bottom:10px}
+.bar.cur{border-color:var(--hit)}
+.bar .idx{align-self:center;display:inline-block;box-sizing:border-box;width:1.6em;height:1.6em;line-height:1.6em;padding:0;margin:0 0 0 2px;border-radius:50%;text-align:center;font-size:.62rem}
+.bar.startc .idx{background:var(--acc);color:#fff;font-weight:700}
+.bm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));min-width:0}
+.bt{min-width:0}
+.bt svg{display:block;width:100%;height:auto;overflow:visible}
+#bars.hideidx .idx{visibility:hidden}
+@media (max-width:639px){.bar{grid-template-columns:1.6em minmax(0,1fr) minmax(0,1fr);padding:4px 4px 2px 2px}}
+</script>
+<script type="text/plain" id="c-accent">
+:root{--bg:#f6f7f9;--paper:#fff;--ink:#1c2130;--sub:#6b7280;--bd:#dde1e8;--hit:#2f5bd8;--acc:#d6334a;--amb:#c46a12;--cur:#e8eefc;--line:#aab0bc;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171f;--paper:#1c212c;--ink:#e9ecf3;--sub:#9aa3b2;--bd:#2c3342;--hit:#7ea1ff;--acc:#ff6b7f;--amb:#f0a24f;--cur:#26304a;--line:#566074}}
+:root[data-theme="dark"]{--bg:#14171f;--paper:#1c212c;--ink:#e9ecf3;--sub:#9aa3b2;--bd:#2c3342;--hit:#7ea1ff;--acc:#ff6b7f;--amb:#f0a24f;--cur:#26304a;--line:#566074}
+html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6}
+main{max-width:1600px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.5rem;margin:0 0 4px;letter-spacing:.04em}
+.lead{margin:0 0 16px;color:var(--sub);font-size:.9rem}
+.panel{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;background:var(--paper);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;margin-bottom:18px}
+.panel label{font-weight:600}
+.num{display:flex;align-items:center;gap:6px}
+input[type=number],select{font:inherit;padding:6px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--ink)}
+input[type=number]{width:4em;text-align:center;font-size:1.05rem}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--bg);color:var(--ink);border-radius:6px;padding:6px 12px}
+button.step{width:36px;padding:6px 0;font-size:1.1rem}
+button.go{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700;padding:8px 22px}
+button.play{border-color:var(--hit);color:var(--hit);font-weight:700;padding:8px 22px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--hit);outline-offset:2px}
+input[type=range]{flex:1 1 150px;min-width:130px;accent-color:var(--acc)}
+.chk{display:flex;align-items:center;gap:6px;cursor:pointer}
+.br{flex-basis:100%;height:0}
+.key{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--sub);margin:0 0 14px}
+.key b{color:var(--ink)}
+#sheet{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px 6px}
+@media (max-width:520px){#sheet .stk span{font-size:.5rem}#sheet .stk svg{width:14px;height:18px}#sheet .idx{margin:0 0 0 2px;padding:0 5px}.bk{min-width:11px;height:14px;line-height:14px;font-size:.55rem;border-radius:3px}.nt{min-height:18px}}
+.card{position:relative;display:grid;grid-template-columns:repeat(4,1fr);background:var(--paper);border:1px solid var(--bd);border-radius:6px;padding-top:22px}
+.card.bar{box-shadow:inset 0 3px 0 var(--acc)}
+.idx{position:absolute;left:6px;top:3px;font-size:.7rem;line-height:1.4;color:var(--sub)}
+.card.bar .idx{color:var(--acc);font-weight:700}
+.nt{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0 6px;cursor:pointer;border-radius:4px;user-select:none;-webkit-tap-highlight-color:transparent}
+.nt+.nt{border-left:1px dashed var(--bd)}
+.nt.on{background:var(--cur)}
+.h{font-size:.78rem;font-weight:700;color:var(--sub)}
+.dot{height:24px;display:flex;align-items:center}
+.dot i{display:block;border-radius:50%;box-sizing:border-box}
+.nt.a .dot i{width:20px;height:20px;background:var(--acc)}
+.nt.s .dot i{width:9px;height:9px;border:2px solid var(--sub)}
+.stk{display:flex;flex-direction:column;align-items:center;gap:0}
+.stk svg{width:18px;height:22px;display:block}
+.stk span{font-size:.58rem;font-weight:700;line-height:1.2}
+.stk{visibility:hidden}
+#sheet.showall .stk,.card.sh .stk{visibility:visible}
+.F{color:var(--acc)}.D{color:var(--amb)}.T{color:var(--sub)}.U{color:var(--hit)}
+.count{color:var(--sub);font-size:.86rem;margin:0 0 10px}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:18px}
+.brand .lead{margin:0}
+.logo{flex:none;width:24px;height:24px;display:block}@media (min-width:768px){.logo{width:28px;height:28px}}
+.copy{margin:34px 0 0;padding-top:14px;border-top:1px solid var(--bd);text-align:center;color:var(--sub);font-size:.8rem;line-height:1.7}
+.card{display:block;padding-top:0;cursor:pointer}
+.card svg.st{display:block;width:100%;height:auto;color:var(--ink)}
+.row{display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:2px}
+.nh.on{color:var(--hit)}
+.idx{position:static;display:inline-block;margin:5px 0 0 6px;padding:2px 8px;border-radius:10px;background:var(--bg);color:var(--sub);border:1px solid var(--bd);cursor:pointer;font-size:.7rem;line-height:1.4}
+.card.bar .idx{color:var(--sub);font-weight:400}
+.card.startc .idx{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+
+#sheet{background:var(--paper);border:1px solid var(--bd);border-radius:8px;padding:8px 6px;column-gap:0;row-gap:4px}
+.card{background:none;border:0;border-radius:0;box-shadow:none}
+.nt+.nt{border-left:0}
+.idx{border:0;background:none;padding:2px 6px;margin:2px 0 0 2px;font-size:.66rem}
+@media (min-width:760px){.card:not(.s8) .lb{display:none}}
+.panel{padding:9px 12px;gap:8px 12px;font-size:.88rem}
+.grp{gap:6px}
+.pa>label,.pd>label{flex:0 0 4.2em}
+.panel button.step{width:28px;padding:3px 0;font-size:1rem}
+.panel input[type=number]{width:3.4em;font-size:.95rem;padding:3px}
+.panel select{padding:3px 4px;font-size:.88rem}
+.panel>button.go,.panel>button.play{min-width:6em;padding:6px 0;font-size:.9rem}
+@media (min-width:640px){.panel{gap:8px 16px}}
+.hint{visibility:hidden}
+#sheet.showall .hint,.card.sh .hint{visibility:visible}
+#mr{flex:1 1 72px;min-width:56px}
+.m-br{display:none;flex-basis:100%;height:0}
+@media (max-width:600px){.m-br{display:block}}
+.panel>label[for="m"],.panel>label[for="bpm"]{min-width:3em}
+.idx{margin:0 0 0 2px;padding:0 5px;line-height:1.3;font-size:.62rem}
+.row{display:grid;grid-template-columns:repeat(4,1fr);padding:0 0 3px}
+.nt{min-height:26px;padding:2px 0;justify-content:center}
+.bk{display:inline-block;min-width:20px;height:20px;line-height:20px;text-align:center;border-radius:5px;font-size:.72rem;font-weight:800;color:var(--paper)}
+.bk.F{background:var(--acc)}.bk.D{background:var(--amb)}.bk.U{background:var(--hit)}
+#sheet .idx{position:relative;z-index:1}
+#sheet .idx::after{content:"";position:absolute;inset:-8px -14px -8px -8px}
+.sheetbar{display:flex;justify-content:flex-end;margin:0 0 6px;font-size:.88rem}
+#sheet.hideidx .idx{visibility:hidden;pointer-events:none}
+#sheet .card.cur{background:color-mix(in srgb,var(--hit) 14%,transparent)}
+details{margin-top:28px}
+summary{cursor:pointer;font-weight:600;margin-bottom:12px}
+#all16{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--paper);border:1px solid var(--bd);border-radius:8px;padding:8px 6px;column-gap:0;row-gap:4px}
+#all16 .card{cursor:default}
+#all16 .hint{visibility:visible}
+#all16 .cb{display:inline-block;margin:0 0 0 2px;padding:0 5px;font-size:.66rem;line-height:1.3;font-weight:700;color:var(--ink)}
+</script>
+<script>
+const SH=(function(){
+const INK="var(--ink)",N=(d)=>["n",d],R=(d)=>["r",d];
+// 15 張卡片：每張 = 一拍，總長 4 個十六分音符
+const CARDS=[
+ {id:"4不打",e:[N(1),N(1),N(2)]},
+ {id:"3不打",e:[N(1),N(2),N(1)]},
+ {id:"2不打",e:[N(2),N(1),N(1)]},
+ {id:"1不打",e:[R(1),N(1),N(1),N(1)]},
+ {id:"12",e:[N(1),N(3)]},
+ {id:"23",e:[R(1),N(1),N(2)]},
+ {id:"34",e:[R(2),N(1),N(1)]},
+ {id:"14",e:[N(3),N(1)]},
+ {id:"24",e:[R(1),N(2),N(1)]},
+ {id:"13",e:[N(2),N(2)]},
+ {id:"1",e:[N(4)]},
+ {id:"2",e:[R(1),N(3)]},
+ {id:"3",e:[R(2),N(2)]},
+ {id:"4",e:[R(3),N(1)]},
+ {id:"全打",e:[N(1),N(1),N(1),N(1)],isNew:true}
+];
+const YC=78,X=s=>12.5+s*25;
+function eighthRest(cx){return `<circle cx="${cx-3.5}" cy="${YC-5}" r="2.6"/><path d="M${cx-3.5} ${YC-4}Q${cx+1} ${YC-4} ${cx+3} ${YC-8.5}" fill="none" stroke-width="1.5"/><path d="M${cx+3} ${YC-8.5}L${cx-2.5} ${YC+9}" stroke-width="1.8"/>`}
+function sixteenthRest(cx){let s=`<path d="M${cx+4} ${YC-9}L${cx-4} ${YC+13}" stroke-width="1.8"/>`;
+ for(let k=0;k<2;k++){const t=.05+.32*k,px=cx+4-8*t,py=YC-9+22*t;
+  s+=`<circle cx="${px-4.5}" cy="${py+3.5}" r="2.4"/><path d="M${px-4.5} ${py+3.5}Q${px} ${py+3.5} ${px} ${py-.5}" fill="none" stroke-width="1.4"/>`}
+ return s}
+// 緊湊排版：卡片寬度依內容決定，音符彼此緊貼（練習頁使用）
+const LW=o=>o.k=="r"?(o.d==1?13:o.d==2?15:20):(o.d==3?19:16);
+function layoutFit(c,last,slot){let t=0;const ev=c.e.map(([k,d])=>{const o={k,d,s:t,tag:0};t+=d;o.w=LW(o);return o});
+ if(slot){ev.forEach((o,k)=>{o.x=(k+.5)*slot});return {ev,W:ev.length*slot}}
+ const pl=1.5,pr=last?7:1.5,sum=ev.reduce((a,o)=>a+o.w,0),W=Math.max(46,sum+pl+pr);
+ let x=pl+(W-pl-pr-sum)/2;ev.forEach(o=>{o.x=x+o.w/2;x+=o.w});return {ev,W}}
+function cardSVG(c,first,last,num,soft,nb,fit,ex){
+ const L=fit?layoutFit(c,last,fit):null,Wd=fit?L.W:100;
+ let t=0;const ev=c.e.map(([k,d])=>{const o={k,d,s:t};t+=d;return o});
+ const hit=[0,0,0,0];ev.forEach(o=>{if(o.k=="n")hit[o.s]=1});
+ let g=`<g stroke="var(--line)" stroke-width="1">`;
+ if(!fit)for(let i=0;i<5;i++)g+=`<line x1="0" x2="${Wd}" y1="${62+i*8}" y2="${62+i*8}"/>`;
+ g+=`</g><g stroke="${INK}" stroke-width="1.6">`;
+ if(first)g+=`<line x1=".8" x2=".8" y1="62" y2="94"/>`;
+ if(last&&!fit)g+=soft?`<line x1="${Wd-.6}" x2="${Wd-.6}" y1="62" y2="94" stroke="var(--line)" stroke-width="1"/>`:`<line x1="${Wd-1.2}" x2="${Wd-1.2}" y1="62" y2="94" stroke-width="3"/>`;
+ g+=`</g>`;
+ for(let i=0;i<4;i++)g+=`<text class="num" x="${fit?Wd/2+(i-1.5)*Math.min(11.5,Wd/4.2):X(i)}" y="22" text-anchor="middle" font-size="${fit?(Wd/4.2<10?8:10):12}" font-weight="${hit[i]?700:400}" fill="${hit[i]?"var(--hit)":"var(--miss)"}">${i+1}</text>`;
+ // 位置依時值等比例排列（1 個十六分音符 = 25 單位）；連桿可跨相鄰卡片（同一小節內）相連
+ const mk=(card,off,tag)=>{let t=0;return card.e.map(([k,d])=>{const o={k,d,s:t,tag,x:off+X(t+(k=="r"?(d-1)/2:0))};t+=d;return o})};
+ const ev0=fit?L.ev:mk(c,0,0);
+ const chain=[...(nb&&nb.prev?mk(nb.prev,-100,-1):[]),...ev0,...(nb&&nb.next?mk(nb.next,100,1):[])];
+ const top=YC-32;let body=`<g fill="${INK}" stroke="${INK}">`;
+ // 分組連桿：連續且短於四分音符的音符（休止符會斷開）
+ const groups=[];let cur=[];
+ chain.forEach(o=>{if(o.k=="n"&&o.d<4)cur.push(o);else{if(cur.length)groups.push(cur);cur=[]}});
+ if(cur.length)groups.push(cur);
+ const grouped=new Set();groups.forEach(gr=>{if(gr.length>=2)gr.forEach(o=>grouped.add(o))});
+ ev0.forEach(o=>{const x=o.x,yr=(ex&&ex.y&&ex.y[o.s])||YC,yc=ex&&ex.dn?156-yr:yr,b0=body.length;
+  if(o.k=="r"){const cx=x;body+=o.d==1?sixteenthRest(cx):eighthRest(cx)+(o.d==3?`<circle cx="${cx+7}" cy="${YC-3}" r="1.8" stroke="none"/>`:"");return}
+  body+=`<g class="nt" data-s="${o.s}"><ellipse cx="${x}" cy="${yc}" rx="5.3" ry="3.8" transform="rotate(-20 ${x} ${yc})" stroke="none"/><line x1="${x+4.9}" x2="${x+4.9}" y1="${yc-1}" y2="${top}" stroke-width="1.5"/>`;
+  if(o.d==3)body+=`<circle cx="${x+11}" cy="${yc-4}" r="1.8" stroke="none"/>`;
+  if(!grouped.has(o)&&o.d<4){const f=o.d==1?2:1;for(let k=0;k<f;k++){const y=top+k*6;body+=`<path d="M${x+4.9} ${y}C${x+6} ${y+6} ${x+15} ${y+8} ${x+11} ${y+17}" fill="none" stroke-width="2.2"/>`}}
+ body+="</g>";if(ex&&ex.dn)body=body.slice(0,b0)+'<g transform="translate(0 156) scale(1 -1)">'+body.slice(b0)+"</g>";
+  if(ex&&ex.a){if(ex.a[o.s])body+=`<path d="M${x-5} 32L${x+5} 36.5L${x-5} 41" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+   const k=ex.k[o.s];if(k&&k!=="T")body+=`<text class="hint" x="${x}" y="11" text-anchor="middle" font-size="10" font-weight="700" fill="${k==="F"?"var(--acc)":k==="D"?"var(--amb)":"var(--hit)"}" stroke="none">${k}</text>`}
+ });
+ if(ex&&ex.hat){ex.hat.forEach(s=>{const x=X(s);body+=`<path d="M${x-4} 29L${x+4} 37M${x+4} 29L${x-4} 37M${x+4.5} 33V12" fill="none" stroke-width="1.6"/>`});
+  if(ex.hb)body+=`<polygon stroke="none" points="${X(ex.hat[0])+3.7},12 ${ex.hb},12 ${ex.hb},16.5 ${X(ex.hat[0])+3.7},16.5"/>`}
+ // 連桿：每一段由左邊那個音符所屬的卡片負責繪製（可延伸到相鄰卡片）
+ if(ex&&ex.dn)body+='<g transform="translate(0 156) scale(1 -1)">';
+ groups.forEach(gr=>{if(gr.length<2)return;
+  gr.forEach((o,i)=>{
+   if(o.tag!==0)return;
+   const nx=gr[i+1],pv=gr[i-1],x=o.x+4.9;
+   if(nx){const x2=nx.x+4.9;
+    body+=`<polygon stroke="none" points="${x-.7},${top} ${x2+.7},${top} ${x2+.7},${top+4.2} ${x-.7},${top+4.2}"/>`;
+    if(o.d==1&&nx.d==1&&nx.tag===o.tag)body+=`<polygon stroke="none" points="${x},${top+7} ${x2},${top+7} ${x2},${top+11} ${x},${top+11}"/>`;
+   }
+   if(o.d==1){
+    const conn=(pv&&pv.d==1&&pv.tag===o.tag)||(nx&&nx.d==1&&nx.tag===o.tag);
+    if(!conn){const dir=(pv&&pv.tag===o.tag)?-1:(nx&&nx.tag===o.tag)?1:(o.s>=2?-1:1);
+     body+=`<polygon stroke="none" points="${x},${top+7} ${x+dir*9},${top+7} ${x+dir*9},${top+11} ${x},${top+11}"/>`}
+   }
+  })});
+ if(ex&&ex.dn)body+="</g>";
+ body+=`</g>`;
+ return `<svg viewBox="0 0 ${Wd} 100" role="img" aria-label="${c.id}">${g}${body}</svg>`;
+}
+function hitsOf(c){let t=0;const h=[];c.e.forEach(([k,d])=>{if(k=="n")h.push(t);t+=d});return h}
+// 共用輸出：壓縮器＋增益＋限幅器，所有頁面走同一條，整體約提高 11 dB 又不爆音
+const out=a=>{if(!a._o){const c=a.createDynamicsCompressor();c.threshold.value=-10;c.knee.value=6;c.ratio.value=8;const m=a.createGain();m.gain.value=3.5;const l=a.createDynamicsCompressor();l.threshold.value=-3;l.knee.value=0;l.ratio.value=20;l.attack.value=.001;l.release.value=.08;c.connect(m);m.connect(l);l.connect(a.destination);a._o=c}return a._o};
+return {N,R,CARDS,cardSVG,hitsOf,out};
+})();
+window.PAGES={cards:function(){const __off=[];const __on=(e,f)=>{document.addEventListener(e,f);__off.push([e,f])};
+const {N,R,CARDS,cardSVG,hitsOf}=SH;
+
+function render(list,el,num){
+ el.innerHTML="";
+ if(!num){
+  const slotOf=r0=>{const n=Math.min(8,list.length-r0);let N=0;for(let k=r0;k<r0+n;k++)N+=list[k].e.length;return 800/(N+N/n*(8-n))};
+  let col=1,cum=0;
+  list.forEach((c,i)=>{
+   if(i%8==0){col=1;cum=0}
+   const r0=i-i%8,slot=slotOf(r0),Wc=c.e.length*slot;
+   cum+=Wc;const end=Math.round(cum*2)+1,span=end-col;
+   const d=document.createElement("div");d.className="card"+(i%4==3?" mend":"");d.style.gridRow=Math.floor(i/8)+1;d.style.gridColumn=col+" / span "+span;col=end;d.style.setProperty("--W",Wc);
+   const b=document.createElement("span");b.className="idx";b.textContent=i+1;b.title="從這一拍開始";
+   b.onclick=e=>{e.stopPropagation();setStart(i+1)};
+   d.appendChild(b);
+   d.insertAdjacentHTML("beforeend",cardSVG(c,false,i%4==3,false,true,null,slot));
+   d.style.cursor="pointer";d.onclick=()=>d.classList.toggle("on");
+   el.appendChild(d);
+  });
+  return;
+ }
+ for(let i=0;i<list.length;i+=4){
+  const m=document.createElement("div");m.className="measure";
+  const part=list.slice(i,i+4);
+  part.forEach((c,j)=>{const d=document.createElement("div");d.className="card";
+   d.innerHTML=cardSVG(c,j==0,j==part.length-1,num);m.appendChild(d)});
+  el.appendChild(m);
+ }
+}
+const $=id=>document.getElementById(id),inp=$("n"),rng=$("r");
+function clamp(v){v=parseInt(v,10);return isNaN(v)?16:Math.max(1,Math.min(32,v))}
+function setN(v){v=clamp(v);inp.value=v;rng.value=v;draw()}
+function draw(){stop();const n=clamp(inp.value);
+ const list=Array.from({length:n},()=>CARDS[Math.floor(Math.random()*CARDS.length)]);
+ curList=list;render(list,$("sheet"));si.max=Math.max(n,1);si.disabled=!n;setStart(1);
+}
+inp.oninput=()=>{if(inp.value!==""){const v=clamp(inp.value);rng.value=v;draw()}};
+inp.onchange=()=>{inp.value=rng.value=clamp(inp.value)};
+rng.oninput=()=>{inp.value=rng.value;draw()};
+$("minus").onclick=()=>setN(clamp(inp.value)-1);
+$("plus").onclick=()=>setN(clamp(inp.value)+1);
+$("go").onclick=draw;
+$("shownum").onchange=e=>$("sheet").classList.toggle("shownum",e.target.checked);
+$("hideidx").onchange=e=>$("sheet").classList.toggle("hideidx",e.target.checked);
+let ac=null,timer=0,raf=0,nextT=0,step=0,q=[],curList=[],playing=false,cts=[];
+function tone(t,f0,f1,v,len,type){const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1!=f0)o.frequency.exponentialRampToValueAtTime(f1,t+len*.7);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+len);o.connect(g);g.connect(SH.out(ac));o.start(t);o.stop(t+len+.02)}
+function sched(){const sd=60/Math.max(30,Math.min(180,+$("bpm").value||45))/4,total=curList.length*4;
+ while(nextT<ac.currentTime+.12){const ci=step>>2,s=step&3;
+  if($("met").checked){const a=s==0,f=a?1000:700;tone(nextT,f,f,a?.35:.2,.04,"sine")}
+  if($("drm").checked&&hitsOf(curList[ci]).includes(s))tone(nextT,260,110,.9,.16,"triangle");
+  q.push([nextT,step]);nextT+=sd;step=(step+1)%total}}
+function mark(st){document.querySelectorAll("#sheet .cur,#sheet .nt.on").forEach(e=>e.classList.remove("cur","on"));
+ const ci=st>>2,s=st&3,c=$("sheet").querySelectorAll(".card")[ci];if(!c)return;c.classList.add("cur");
+ const n=c.querySelector(`.nt[data-s="${s}"]`);if(n)n.classList.add("on");
+ if(s==0)c.scrollIntoView({block:"nearest",behavior:"smooth"})}
+function loop(){const t=ac.currentTime;while(q.length&&q[0][0]<=t){const e=q.shift();if($("dyn").checked)mark(e[1])}raf=requestAnimationFrame(loop)}
+function start(){ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();step=curList.length?(sc(si.value)-1)*4:0;q=[];nextT=ac.currentTime+.1;if(!curList.length){playing=true;$("play").textContent="■ 停止";return}{const c=$("sheet").querySelectorAll(".card")[step>>2];if(c)c.scrollIntoView({block:"nearest",behavior:"smooth"})}if($("dyn").checked)countIn();
+ timer=setInterval(sched,25);raf=requestAnimationFrame(loop);playing=true;$("play").textContent="■ 停止"}
+function countIn(){const sd=60/Math.max(30,Math.min(180,+$("bpm").value||45))/4;const t0=nextT;nextT+=sd*4;
+ for(let i=0;i<4;i++){const a=i==0,f=a?1000:700;tone(t0+i*sd,f,f,a?.35:.2,.04,"sine")}}
+function stop(){cts.forEach(clearTimeout);cts=[];if(window.speechSynthesis)speechSynthesis.cancel();clearInterval(timer);cancelAnimationFrame(raf);q=[];playing=false;$("play").textContent="▶ 播放";
+ document.querySelectorAll("#sheet .cur,#sheet .nt.on").forEach(e=>e.classList.remove("cur","on"))}
+$("play").onclick=()=>playing?stop():start();
+const bi=$("bpm"),br=$("brng"),bc=v=>{v=parseInt(v,10);return isNaN(v)?45:Math.max(30,Math.min(180,v))};
+bi.oninput=()=>{if(bi.value!=="")br.value=bc(bi.value)};
+bi.onchange=()=>{bi.value=br.value=bc(bi.value)};
+br.oninput=()=>{bi.value=br.value};
+$("bminus").onclick=()=>{bi.value=br.value=bc(bc(bi.value)-1)};
+$("bplus").onclick=()=>{bi.value=br.value=bc(bc(bi.value)+1)};
+$("dyn").onchange=e=>{if(!e.target.checked)document.querySelectorAll("#sheet .cur,#sheet .nt.on").forEach(x=>x.classList.remove("cur","on"))};
+const si=$("st");
+function sc(v){v=parseInt(v,10);return isNaN(v)?1:Math.max(1,Math.min(Math.max(curList.length,1),v))}
+function markStart(){document.querySelectorAll("#sheet .card.startc").forEach(e=>e.classList.remove("startc"));const c=$("sheet").querySelectorAll(".card")[sc(si.value)-1];if(c&&curList.length)c.classList.add("startc")}
+function setStart(v){si.value=sc(v);markStart()}
+let wl=null,wlBusy=false;
+async function keepAwake(){if(wl||wlBusy||!("wakeLock" in navigator)||document.visibilityState!=="visible")return;wlBusy=true;try{wl=await navigator.wakeLock.request("screen");wl.addEventListener("release",()=>{wl=null})}catch(e){wl=null}wlBusy=false}
+__on("visibilitychange",keepAwake);
+["pointerdown","keydown"].forEach(ev=>__on(ev,keepAwake));
+keepAwake();
+render(CARDS,$("all"),true);
+function derive(c){const h=hitsOf(c);
+ const A=[0,1,2,3].map(i=>h.includes(i)?N(1):R(1));
+ const B=[];A.forEach(([k,d])=>{const l=B[B.length-1];if(k=="r"&&l&&l[0]=="r")l[1]+=d;else B.push([k,d])});
+ const C=[];B.forEach(([k,d])=>{const l=C[C.length-1];if(k=="r"&&l&&l[0]=="n")l[1]+=d;else C.push([k,d])});
+ const st=[[A,"原始：不打的寫休止符"]];
+ if(JSON.stringify(B)!=JSON.stringify(A))st.push([B,"相連的休止符合併"]);
+ if(JSON.stringify(C)!=JSON.stringify(B))st.push([C,"休止符併入前一個音符"]);
+ return st}
+CARDS.forEach(c=>{const st=derive(c),h=hitsOf(c).map(i=>i+1);
+ const it=document.createElement("div");it.className="ditem";
+ it.innerHTML=`<h3>${h.length==4?"1、2、3、4 全打":"打 "+h.join("、")}</h3><div class="drow">`+st.map(([e,l],i)=>`<figure><div class="card${i?"":" first"}">${i?`<span class="ar">→</span>`:""}${cardSVG({id:l,e},false,false)}</div><figcaption>${l}${i==st.length-1?"（最簡）":""}</figcaption></figure>`).join("")+`</div>`;
+ $("derive").appendChild(it)});
+draw();
+
+return ()=>{try{stop()}catch(e){}__off.forEach(([e,f])=>document.removeEventListener(e,f));try{ac&&ac.close()}catch(e){}try{wl&&wl.release()}catch(e){}};
+},
+accent:function(){const __off=[];const __on=(e,f)=>{document.addEventListener(e,f);__off.push([e,f])};
+
+const $=id=>document.getElementById(id);
+const cl=(v,a,b,d)=>{v=parseInt(v,10);return isNaN(v)?d:Math.max(a,Math.min(b,v))};
+let acc=[],ac=null,timer=0,raf=0,nextT=0,step=0,q=[],playing=false;
+const NAME={F:"Full",D:"Down",T:"Tap",U:"Up"};
+function strokeOf(A,i){const T=A.length,a=A[i],b=A[(i+2)%T];return a?(b?"F":"D"):(b?"U":"T")}
+function stroke(i){return strokeOf(acc,i)}
+function gen(){stop();
+  const m=cl($("m").value,1,32,16),mode=$("mode").value;
+  acc=Array(m*4).fill(0);$("st").max=m;$("st").value=1;
+  for(let k=0;k<m;k++){
+    if(mode==="bar1")acc[k*4+Math.floor(Math.random()*4)]=1;
+    else for(let t=0;t<4;t++)if(Math.random()<.35)acc[k*4+t]=1;
+  }
+  render();
+}
+function beatG(A,b,bar,ids){
+  const YC=78,top=46,X=t=>12.5+t*25;
+  let g='<g stroke="var(--line)" stroke-width="1">';
+  for(let l=0;l<5;l++)g+=`<line x1="0" x2="100" y1="${62+l*8}" y2="${62+l*8}"/>`;
+  g+='</g><g stroke="currentColor" stroke-width="1.6">';
+  if(bar)g+='<line x1="98.8" x2="98.8" y1="62" y2="94" stroke-width="3"/>';
+  g+='</g>';
+  for(let t=0;t<4;t++){
+    const i=b*4+t,x=X(t),k=strokeOf(A,i);
+    g+=`<g class="nh"${ids?` data-i="${i}"`:""} fill="currentColor" stroke="currentColor"><ellipse cx="${x}" cy="${YC}" rx="5.3" ry="3.8" transform="rotate(-20 ${x} ${YC})" stroke="none"/><line x1="${x+4.9}" x2="${x+4.9}" y1="${YC-1}" y2="${top}" stroke-width="1.5"/></g>`;
+    if(A[i])g+=`<path d="M${x-5} 32L${x+5} 36.5L${x-5} 41" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+    if(k!=="T")g+=`<text class="hint" x="${x}" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="${k==="F"?"var(--acc)":k==="D"?"var(--amb)":"var(--hit)"}" stroke="none">${k}</text>`;
+  }
+  const a=X(0)+4.9-.7,c=X(3)+4.9+.7;
+  g+=`<g fill="currentColor" stroke="none"><polygon points="${a},${top} ${c},${top} ${c},${top+4.2} ${a},${top+4.2}"/><polygon points="${a},${top+7} ${c},${top+7} ${c},${top+11} ${a},${top+11}"/></g>`;
+  return g;
+}
+function render(){
+  const sh=$("sheet");let h="";
+  for(let b=0;b<acc.length/4;b++){
+    h+=`<div class="card${b%8==0?" s8":""}" tabindex="0" role="button"><span class="idx" title="從這一拍開始">${b+1}</span><svg class="st" viewBox="0 8 100 90" role="img" aria-label="第${b+1}拍">${beatG(acc,b,b%4==3,true)}</svg></div>`;
+  }
+  sh.innerHTML=h;markStart();
+  
+}
+// 全部 16 種組合：兩拍一組、每拍 1 個重音；數字＝該拍重音在第幾個音，順序 1+1 1+2 1+3 1+4 2+1 … 4+4
+// 每個組合視為循環，手法（F/D/U）依「下一個四拍」（循環回到本組合第 1 拍）判斷
+function renderAll16(){
+  let h="";
+  for(let p=0;p<4;p++)for(let q=0;q<4;q++){
+    const A=Array(8).fill(0);A[p]=1;A[4+q]=1;
+    h+=`<div class="card"><span class="cb">${p+1}+${q+1}</span><svg class="st" viewBox="0 8 200 90" role="img" aria-label="組合 ${p+1}+${q+1}">${beatG(A,0,false,false)}<g transform="translate(100 0)">${beatG(A,1,true,false)}</g></svg></div>`;
+  }
+  $("all16").innerHTML=h;
+}
+function setStart(v){$("st").value=cl(v,1,acc.length/4,1);markStart()}
+function markStart(){document.querySelectorAll("#sheet .startc").forEach(e=>e.classList.remove("startc"));const c=$("sheet").children[cl($("st").value,1,acc.length/4,1)-1];if(c)c.classList.add("startc")}
+
+$("sheet").addEventListener("click",e=>{const c=e.target.closest(".card");if(!c)return;if(e.target.closest(".idx")){setStart([...$("sheet").children].indexOf(c)+1);return}if(e.target.closest("svg"))c.classList.toggle("sh")});
+$("sheet").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("card")){e.preventDefault();e.target.classList.toggle("sh")}});
+function setM(v){$("m").value=$("mr").value=cl(v,1,32,16);gen()}
+$("mr").oninput=()=>setM($("mr").value);
+$("m").onchange=()=>setM($("m").value);
+$("mm").onclick=()=>setM(cl($("m").value,1,32,16)-1);
+$("mp").onclick=()=>setM(cl($("m").value,1,32,16)+1);
+$("mode").onchange=gen;$("go").onclick=gen;
+$("show").onchange=e=>$("sheet").classList.toggle("showall",e.target.checked);
+$("hideidx").onchange=e=>$("sheet").classList.toggle("hideidx",e.target.checked);
+$("dyn").onchange=e=>{if(!e.target.checked)document.querySelectorAll(".on,.cur").forEach(x=>x.classList.remove("on","cur"))};
+const bi=$("bpm"),br=$("brng"),bc=v=>cl(v,10,180,60);
+bi.oninput=()=>{if(bi.value!=="")br.value=bc(bi.value)};
+bi.onchange=()=>{bi.value=br.value=bc(bi.value)};
+br.oninput=()=>{bi.value=br.value};
+$("bm").onclick=()=>{bi.value=br.value=bc(bc(bi.value)-1)};
+$("bp").onclick=()=>{bi.value=br.value=bc(bc(bi.value)+1)};
+function tone(t,f0,f1,v,len,type){const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1!=f0)o.frequency.exponentialRampToValueAtTime(f1,t+len*.7);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+len);o.connect(g);g.connect(SH.out(ac));o.start(t);o.stop(t+len+.02)}
+function sched(){
+  const sd=60/bc(bi.value)/4,total=acc.length;
+  while(nextT<ac.currentTime+.12){
+    if($("met").checked){const a=step%4==0;tone(nextT,a?1000:700,a?1000:700,a?.35:.2,.04,"sine")}
+    if($("drm").checked)acc[step]?tone(nextT,260,110,.9,.16,"triangle"):tone(nextT,260,110,.25,.1,"triangle");
+    q.push([nextT,step]);nextT+=sd;step=(step+1)%total;
+  }
+}
+function mark(i){
+  document.querySelectorAll(".on,.cur").forEach(e=>e.classList.remove("on","cur"));
+  const els=document.querySelectorAll(`[data-i="${i}"]`);els.forEach(e=>e.classList.add("on"));
+  const cd=$("sheet").children[i>>2];if(cd){cd.classList.add("cur");if(i%4==0)cd.scrollIntoView({block:"nearest",behavior:"smooth"})}
+}
+function loop(){const t=ac.currentTime;while(q.length&&q[0][0]<=t){const e=q.shift();if($("dyn").checked)mark(e[1])}raf=requestAnimationFrame(loop)}
+function start(){
+  ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();
+  step=(cl($("st").value,1,acc.length/4,1)-1)*4;q=[];nextT=ac.currentTime+.1;
+  {const c=$("sheet").children[step>>2];if(c)c.scrollIntoView({block:"nearest",behavior:"smooth"})}
+  if($("dyn").checked){const sd=60/bc(bi.value)/4;
+    for(let i=0;i<4;i++){const a=i==0;tone(nextT+i*sd,a?1000:700,a?1000:700,a?.35:.2,.04,"sine")}
+    nextT+=sd*4}
+  timer=setInterval(sched,25);raf=requestAnimationFrame(loop);playing=true;$("play").textContent="■ 停止";
+}
+function stop(){clearInterval(timer);cancelAnimationFrame(raf);q=[];playing=false;$("play").textContent="▶ 播放";document.querySelectorAll(".on,.cur").forEach(e=>e.classList.remove("on","cur"))}
+$("play").onclick=()=>playing?stop():start();
+let wl=null;
+async function keepAwake(){if(wl||!("wakeLock" in navigator)||document.visibilityState!=="visible")return;try{wl=await navigator.wakeLock.request("screen");wl.addEventListener("release",()=>{wl=null})}catch(e){wl=null}}
+__on("visibilitychange",keepAwake);
+["pointerdown","keydown"].forEach(ev=>__on(ev,keepAwake));
+gen();renderAll16();
+
+return ()=>{try{stop()}catch(e){}__off.forEach(([e,f])=>document.removeEventListener(e,f));try{ac&&ac.close()}catch(e){}try{wl&&wl.release()}catch(e){}};
+},
+combo:function(){const __off=[];const __on=(e,f)=>{document.addEventListener(e,f);__off.push([e,f])};
+const {CARDS,cardSVG,hitsOf}=SH;
+const $=id=>document.getElementById(id);
+const cl=(v,a,b,d)=>{v=parseInt(v,10);return isNaN(v)?d:Math.max(a,Math.min(b,v))};
+let ac=null,timer=0,raf=0,nextT=0,step=0,q=[],playing=false,list=[],acc=[],hit=[],H=[];
+// 手高度：打到的音＝重音為高；休止符沿用同一隻手下一個要打的音的高度（空揮時先準備好）
+function calcH(){const T=acc.length;H=Array(T).fill(0);
+  for(let i=0;i<T;i++){let j=i,k=0;while(!hit[j]&&k<T){j=(j+2)%T;k++}H[i]=hit[j]&&acc[j]?1:0}}
+function strokeOf(i){const a=H[i],b=H[(i+2)%H.length];return a?(b?"F":"D"):(b?"U":"T")}
+function gen(){stop();
+  const n=cl($("n").value,1,32,16),mode=$("mode").value;
+  list=Array.from({length:n},()=>CARDS[Math.floor(Math.random()*CARDS.length)]);
+  acc=Array(n*4).fill(0);hit=Array(n*4).fill(0);
+  list.forEach((c,b)=>{const h=hitsOf(c);h.forEach(s=>hit[b*4+s]=1);
+    if(mode==="bar1")acc[b*4+h[Math.floor(Math.random()*h.length)]]=1;
+    else h.forEach(s=>{if(Math.random()<.35)acc[b*4+s]=1})});
+  calcH();render();$("st").value=1;markStart();
+}
+function render(){
+  const el=$("sheet");el.innerHTML="";
+  const slotOf=r0=>{const n=Math.min(8,list.length-r0);let N=0;for(let k=r0;k<r0+n;k++)N+=list[k].e.length;return 800/(N+N/n*(8-n))};
+  let col=1,cum=0;
+  list.forEach((c,i)=>{
+    if(i%8==0){col=1;cum=0}
+    const r0=i-i%8,slot=slotOf(r0),Wc=c.e.length*slot;
+    cum+=Wc;const end=Math.round(cum*2)+1,span=end-col;
+    const d=document.createElement("div");d.className="card"+(i%4==3?" mend":"");d.style.gridRow=Math.floor(i/8)+1;d.style.gridColumn=col+" / span "+span;col=end;d.style.setProperty("--W",Wc);
+    const b=document.createElement("span");b.className="idx";b.textContent=i+1;b.title="從這一拍開始";
+    b.onclick=e=>{e.stopPropagation();setStart(i+1)};
+    d.appendChild(b);
+    const ex={a:[0,1,2,3].map(s=>acc[i*4+s]),k:[0,1,2,3].map(s=>strokeOf(i*4+s))};
+    d.insertAdjacentHTML("beforeend",cardSVG(c,false,i%4==3,false,true,null,slot,ex));
+    d.style.cursor="pointer";d.onclick=()=>d.classList.toggle("sh");
+    el.appendChild(d);
+  });
+  markStart();
+}
+function sc(v){return cl(v,1,Math.max(list.length,1),1)}
+function markStart(){document.querySelectorAll("#sheet .card.startc").forEach(e=>e.classList.remove("startc"));const c=$("sheet").querySelectorAll(".card")[sc($("st").value)-1];if(c&&list.length)c.classList.add("startc")}
+function setStart(v){$("st").value=sc(v);markStart()}
+function setN(v){$("n").value=$("r").value=cl(v,1,32,16);gen()}
+$("r").oninput=()=>setN($("r").value);
+$("n").onchange=()=>setN($("n").value);
+$("minus").onclick=()=>setN(cl($("n").value,1,32,16)-1);
+$("plus").onclick=()=>setN(cl($("n").value,1,32,16)+1);
+$("mode").onchange=gen;$("go").onclick=gen;
+$("shownum").onchange=e=>$("sheet").classList.toggle("shownum",e.target.checked);
+$("show").onchange=e=>$("sheet").classList.toggle("showall",e.target.checked);
+$("hideidx").onchange=e=>$("sheet").classList.toggle("hideidx",e.target.checked);
+$("dyn").onchange=e=>{if(!e.target.checked)document.querySelectorAll("#sheet .cur,#sheet .nt.on").forEach(x=>x.classList.remove("cur","on"))};
+const bi=$("bpm"),br=$("brng"),bc=v=>cl(v,10,180,60);
+bi.oninput=()=>{if(bi.value!=="")br.value=bc(bi.value)};
+bi.onchange=()=>{bi.value=br.value=bc(bi.value)};
+br.oninput=()=>{bi.value=br.value};
+$("bminus").onclick=()=>{bi.value=br.value=bc(bc(bi.value)-1)};
+$("bplus").onclick=()=>{bi.value=br.value=bc(bc(bi.value)+1)};
+function tone(t,f0,f1,v,len,type){const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1!=f0)o.frequency.exponentialRampToValueAtTime(f1,t+len*.7);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+len);o.connect(g);g.connect(SH.out(ac));o.start(t);o.stop(t+len+.02)}
+function sched(){
+  const sd=60/bc(bi.value)/4,total=list.length*4;
+  while(nextT<ac.currentTime+.12){
+    if($("met").checked){const a=step%4==0;tone(nextT,a?1000:700,a?1000:700,a?.35:.2,.04,"sine")}
+    if($("drm").checked&&hit[step])acc[step]?tone(nextT,260,110,.9,.16,"triangle"):tone(nextT,260,110,.25,.1,"triangle");
+    q.push([nextT,step]);nextT+=sd;step=(step+1)%total;
+  }
+}
+function mark(st){document.querySelectorAll("#sheet .cur,#sheet .nt.on").forEach(e=>e.classList.remove("cur","on"));
+  const ci=st>>2,s=st&3,c=$("sheet").querySelectorAll(".card")[ci];if(!c)return;c.classList.add("cur");
+  const n=c.querySelector(`.nt[data-s="${s}"]`);if(n)n.classList.add("on");
+  if(s==0)c.scrollIntoView({block:"nearest",behavior:"smooth"})}
+function loop(){const t=ac.currentTime;while(q.length&&q[0][0]<=t){const e=q.shift();if($("dyn").checked)mark(e[1])}raf=requestAnimationFrame(loop)}
+function start(){
+  ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();
+  step=(sc($("st").value)-1)*4;q=[];nextT=ac.currentTime+.1;
+  {const c=$("sheet").querySelectorAll(".card")[step>>2];if(c)c.scrollIntoView({block:"nearest",behavior:"smooth"})}
+  if($("dyn").checked){const sd=60/bc(bi.value)/4;
+    for(let i=0;i<4;i++){const a=i==0;tone(nextT+i*sd,a?1000:700,a?1000:700,a?.35:.2,.04,"sine")}
+    nextT+=sd*4}
+  timer=setInterval(sched,25);raf=requestAnimationFrame(loop);playing=true;$("play").textContent="■ 停止";
+}
+function stop(){clearInterval(timer);cancelAnimationFrame(raf);q=[];playing=false;$("play").textContent="▶ 播放";document.querySelectorAll("#sheet .cur,#sheet .nt.on").forEach(e=>e.classList.remove("cur","on"))}
+$("play").onclick=()=>playing?stop():start();
+let wl=null;
+async function keepAwake(){if(wl||!("wakeLock" in navigator)||document.visibilityState!=="visible")return;try{wl=await navigator.wakeLock.request("screen");wl.addEventListener("release",()=>{wl=null})}catch(e){wl=null}}
+__on("visibilitychange",keepAwake);
+["pointerdown","keydown"].forEach(ev=>__on(ev,keepAwake));
+keepAwake();
+gen();
+
+return ()=>{try{stop()}catch(e){}__off.forEach(([e,f])=>document.removeEventListener(e,f));try{ac&&ac.close()}catch(e){}try{wl&&wl.release()}catch(e){}};
+}
+,groove:function(){const __off=[];const __on=(e,f)=>{document.addEventListener(e,f);__off.push([e,f])};
+const {CARDS,cardSVG,hitsOf}=SH;
+const $=id=>document.getElementById(id);
+const cl=(v,a,b,d)=>{v=parseInt(v,10);return isNaN(v)?d:Math.max(a,Math.min(b,v))};
+const byKey={};CARDS.forEach(c=>byKey[hitsOf(c).join()]=c);
+const Y={1:74,2:90},IDS=["hh","sn","bd"];
+let ac=null,timer=0,raf=0,nextT=0,step=0,q=[],playing=false,P=[[],[],[]];
+// P[0]=Hi-hat、P[1]=Snare、P[2]=Kick；每小節 16 格（十六分音符）
+function gen(){stop();
+  const nb=cl($("n").value,1,8,2)*2,d=+$("dens").value,hard=$("lvl").value==="B";
+  const pool=d?CARDS.filter(c=>hitsOf(c).length==d):CARDS,L=nb*16;
+  P=[0,1,2].map(()=>Array(L).fill(0));
+  for(let b=0;b<nb*4;b++){const o=b*4,bk=b%2==1;
+    P[0][o]=P[0][o+2]=1;
+    const pl=(bk||b%4==0)?pool.filter(c=>hitsOf(c)[0]===0):pool,hs=new Set(hitsOf(pl[Math.floor(Math.random()*pl.length)]));
+    if(bk)P[1][o]=1
+    hs.forEach(s=>{if(bk&&s==0)return;P[hard&&s>0&&Math.random()<.35?1:2][o+s]=1})}
+  $("st").value=1;render();
+}
+function render(){let h="";const nb=P[0].length/16;
+  for(let k=0;k<nb;k+=2){
+    h+=`<div class="bar"><span class="idx" title="從這一組開始">${(k>>1)+1}</span>`;
+    for(let m=k;m<Math.min(k+2,nb);m++){h+=`<div class="bm">`;
+      for(let j=0;j<4;j++){const b=m*4+j,o=b*4,hits=[],y={};
+        for(let s=0;s<4;s++)for(let v=1;v<3;v++)if(P[v][o+s]){hits.push(s);y[s]=Y[v]}
+        const svg=cardSVG(byKey[hits.join()],m==k&&j==0,j==3,false,b<nb*4-1,null,null,{y,hat:[0,2],hb:j%2?null:167.5,dn:true})
+          .replace('viewBox="0 0 100 100"','viewBox="0 8 100 108"').replace(/<text class="num"[^>]*>[^<]*<\/text>/g,"");
+        h+=`<div class="bt" data-b="${b}">${svg}</div>`}
+      h+=`</div>`}
+    h+=`</div>`}
+  $("bars").innerHTML=h;markStart();
+}
+const sc=v=>cl(v,1,Math.max(P[0].length/32,1),1);
+function markStart(){document.querySelectorAll("#bars .startc").forEach(e=>e.classList.remove("startc"));const b=$("bars").children[sc($("st").value)-1];if(b)b.classList.add("startc")}
+$("bars").addEventListener("click",e=>{const i=e.target.closest(".idx");if(!i)return;$("st").value=i.textContent;markStart()});
+function setN(v){$("n").value=$("r").value=cl(v,1,8,2);gen()}
+$("r").oninput=()=>setN($("r").value);
+$("n").onchange=()=>setN($("n").value);
+$("minus").onclick=()=>setN(cl($("n").value,1,8,2)-1);
+$("plus").onclick=()=>setN(cl($("n").value,1,8,2)+1);
+$("lvl").onchange=gen;$("dens").onchange=gen;$("hideidx").onchange=e=>$("bars").classList.toggle("hideidx",e.target.checked);$("go").onclick=gen;
+const clr=()=>document.querySelectorAll("#bars .on,#bars .cur").forEach(e=>e.classList.remove("on","cur"));
+$("dyn").onchange=e=>{if(!e.target.checked)clr()};
+const bi=$("bpm"),br=$("brng"),bc=v=>cl(v,10,180,60);
+bi.oninput=()=>{if(bi.value!=="")br.value=bc(bi.value)};
+bi.onchange=()=>{bi.value=br.value=bc(bi.value)};
+br.oninput=()=>{bi.value=br.value};
+$("bminus").onclick=()=>{bi.value=br.value=bc(bc(bi.value)-1)};
+$("bplus").onclick=()=>{bi.value=br.value=bc(bc(bi.value)+1)};
+function tone(t,f0,f1,v,len,type){const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1!=f0)o.frequency.exponentialRampToValueAtTime(f1,t+len*.7);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+len);o.connect(g);g.connect(SH.out(ac));o.start(t);o.stop(t+len+.02)}
+const V=[(t,h)=>tone(t,7000,7000,h?.16:.07,.035,"square"),t=>tone(t,190,130,.8,.11,"sawtooth"),t=>tone(t,150,50,.9,.16,"sine")];
+function sched(){
+  const dur=60/bc(bi.value)/4,L=P[0].length;
+  while(nextT<ac.currentTime+.12){
+    if($("met").checked&&step%4==0){const a=step%16==0;tone(nextT,a?1000:700,a?1000:700,a?.35:.2,.04,"sine")}
+    IDS.forEach((id,r)=>{if(P[r][step]&&$(id).checked)V[r](nextT,step%4==0)});
+    q.push([nextT,step]);nextT+=dur;step=(step+1)%L;
+  }
+}
+function mark(i){clr();
+  const bt=$("bars").querySelector(`.bt[data-b="${i>>2}"]`);if(!bt)return;
+  bt.classList.add("cur");bt.closest(".bar").classList.add("cur");
+  const n=bt.querySelector(`.nt[data-s="${i&3}"]`);if(n)n.classList.add("on");
+  if(i%32==0)bt.closest(".bar").scrollIntoView({block:"nearest",behavior:"smooth"})}
+function loop(){const t=ac.currentTime;while(q.length&&q[0][0]<=t){const e=q.shift();if($("dyn").checked)mark(e[1])}raf=requestAnimationFrame(loop)}
+function start(){
+  ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();
+  step=(sc($("st").value)-1)*32;q=[];nextT=ac.currentTime+.1;
+  {const b=$("bars").children[step>>5];if(b)b.scrollIntoView({block:"nearest",behavior:"smooth"})}
+  if($("dyn").checked){const beat=60/bc(bi.value);
+    for(let i=0;i<4;i++){const a=i==0;tone(nextT+i*beat,a?1000:700,a?1000:700,a?.35:.2,.04,"sine")}
+    nextT+=beat*4}
+  timer=setInterval(sched,25);raf=requestAnimationFrame(loop);playing=true;$("play").textContent="■ 停止";
+}
+function stop(){clearInterval(timer);cancelAnimationFrame(raf);q=[];playing=false;$("play").textContent="▶ 播放";clr()}
+$("play").onclick=()=>playing?stop():start();
+let wl=null;
+async function keepAwake(){if(wl||!("wakeLock" in navigator)||document.visibilityState!=="visible")return;try{wl=await navigator.wakeLock.request("screen");wl.addEventListener("release",()=>{wl=null})}catch(e){wl=null}}
+__on("visibilitychange",keepAwake);
+["pointerdown","keydown"].forEach(ev=>__on(ev,keepAwake));
+keepAwake();
+gen();
+
+return ()=>{try{stop()}catch(e){}__off.forEach(([e,f])=>document.removeEventListener(e,f));try{ac&&ac.close()}catch(e){}try{wl&&wl.release()}catch(e){}};
+}
+};
+</script>
+<script>
+(function(){
+const g=id=>document.getElementById(id);
+const T={cards:"切分音",accent:"輕重音",combo:"切分音＋輕重拍",groove:"節奏律動"};
+const css={},html={};
+for(const k in T){css[k]=g("c-"+k).textContent;html[k]=g("t-"+k).innerHTML}
+css.combo=css.cards+css.combo;css.groove=css.combo+css.groove;
+let cur=null,off=null;
+function route(){
+ const h=location.hash.slice(1),k=T[h]?h:"home";
+ if(k===cur)return;
+ if(off){try{off()}catch(e){}off=null}
+ cur=k;const hm=k==="home";
+ g("home").hidden=!hm;g("bar").hidden=hm;g("ttl").textContent=hm?"":T[k];
+ g("pagecss").textContent=hm?"":css[k];
+ g("mount").innerHTML=hm?"":html[k];
+ document.title=hm?"鼓手練習室":T[k];
+ window.scrollTo(0,0);
+ if(!hm)off=window.PAGES[k]();
+}
+window.addEventListener("hashchange",route);route();
+})();
+</script>
+</body>
+</html>
